@@ -14,15 +14,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class ResultActivity extends AppCompatActivity {
 
-    TextView textView;
+    TextView textViewResult;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_result);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -31,15 +31,24 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        textView = findViewById(R.id.textViewStatistic);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int result = preferences.getInt("max" , 0);
-        String totalResult = String.format("Рекорд правильных ответов %s", result);
-        textView.setText(totalResult);
+        textViewResult = findViewById(R.id.textViewTotalResult);
+        Intent intent = getIntent();
+        if (intent.hasExtra("result")){
+            int result = intent.getIntExtra("result", 0 );
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            int max = preferences.getInt("max", 0);
+            String totalResult = String.format("Результат: %s\nМаксимальный результат: %s", result, max);
+            textViewResult.setText(totalResult);
+        }
     }
 
-    public void onClickStart(View view) {
+    public void onClickStartOver(View view) {
         Intent intent = new Intent(this, PlayActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickBack(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 }
